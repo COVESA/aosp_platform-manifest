@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <!-- Copy of upstream AOSP manifest from https://android.googlesource.com/platform/manifest -->
+  <include name="aosp-vanilla.xml" />
+
+  <!-- COVESA additions -->
+  <include name="covesa-additions.xml" />
+
+</manifest>
