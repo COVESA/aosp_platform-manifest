@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
 
-  <remote  name="aosp"
-           fetch="https://android.googlesource.com/"
-           review="https://android-review.googlesource.com/" />
-  <default revision="refs/tags/android-12.0.0_r34"
-           remote="aosp"
-           sync-j="4" />
-
   <superproject name="platform/superproject" remote="aosp" revision="android-12.0.0_r34" />
   <contactinfo bugurl="go/repo-bug" />
 

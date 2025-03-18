@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
 
-  <remote  name="covesa-github"
-           fetch="https://github.com/COVESA" />
-
-  <project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" />
+  <project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />
 
 </manifest>
