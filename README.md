@@ -32,8 +32,14 @@ source build/envsetup.sh
 lunch
 ```
 
-Select the target from `lunch` menu. For example, `covesa_emu_x86_64_car-userdebug`. Then start the build:
+Select the target from `lunch` menu. For example, `covesa_emu_arm64_car-userdebug`. Then start the build:
 
 ```
-m
+m emu_img_zip
 ```
+
+This creates following artifact: `out/host/linux-x86/sdk/covesa_emu_arm64_car/sdk-repo-linux-system-images-eng.${USER}.zip`
+
+## How to distribute
+
+Deployment details are part of `device/covesa/emulator`.
