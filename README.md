@@ -38,7 +38,7 @@ Select the target from `lunch` menu. For example, `covesa_emu_arm64_car-userdebu
 m emu_img_zip
 ```
 
-This creates following artifact: `out/host/linux-x86/sdk/covesa_emu_arm64_car/sdk-repo-linux-system-images-eng.${USER}.zip`
+This creates following artifact: `out/target/product/emulator_arm64/sdk-repo-linux-system-images-eng.${USER}.zip`
 
 ## How to distribute
 
