@@ -6,14 +6,13 @@ on:
 jobs:
   checkout:
     runs-on: [self-hosted, high-performance-ubuntu]
-    env:
-      # for example /home/github-runner/actions-runner/_work/android-12
-      AOSP_ROOT: $GITHUB_WORKSPACE/$GITHUB_REF_NAME
     steps:
       - name: repo init if workspace is empty
         run: |
-          echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
-          echo "GITHUB_REF_NAME (branch) = $GITHUB_REF_NAME"
+          repo version
+          REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
+          GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
+          AOSP_ROOT="$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME"
           if [[ ! -d "$AOSP_ROOT" || -z "$(ls -A '$AOSP_ROOT')" ]]; then
             mkdir -p "$AOSP_ROOT"
             cd "$AOSP_ROOT"

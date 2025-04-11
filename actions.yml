@@ -1,0 +1,65 @@
+# The purpose of this workflow is to create AOSP emulator images and deploy them so that 
+# they become available for public download
+
+name: Incremental AOSP build on AWS
+
+on:
+  # No auto-triggering on PR, since it is a public repository
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  checkout:
+    runs-on: [self-hosted, low-performance-linux]
+    steps:
+      - name: Checkout AOSP + COVESA sources
+        run: # TODO if /mnt/build_workspace/${{ github.ref_name }} empty, then repo init ...; repo sync -c
+
+  full-build:
+    runs-on: [self-hosted, high-performance-ubuntu]
+    steps:
+      - name: Build ARM emulator image (fast)
+        run: |
+          source build/envsetup.sh
+          lunch covesa_emu_arm64_car-userdebug
+          m emu_img_zip
+      - name: Build x86_64 emulator image (fast)
+        run: |
+          source build/envsetup.sh
+          lunch covesa_emu_x86_64_car-userdebug
+          m emu_img_zip
+
+  incremental-build:
+    runs-on: [self-hosted, low-performance-linux]
+    steps:
+      - name: Build ARM emulator image
+        run: |
+          source build/envsetup.sh
+          lunch covesa_emu_arm64_car-userdebug
+          m emu_img_zip
+      - name: Build x86_64 emulator image
+        run: |
+          source build/envsetup.sh
+          lunch covesa_emu_x86_64_car-userdebug
+          m emu_img_zip
+
+  deploy:
+    runs-on: [self-hosted, low-performance-linux]
+    steps:
+      - name: Modify XML
+        run: # TODO sed/awk TODOs to "sha1sum" and size of artifacts
+      - name: Upload ARM emulator zip # with a filename appended with .new
+        run: # TODO scp/rsync
+      - name: Upload x86_64 emulator zip # with a filename appended with .new
+        run: # TODO scp/rsync
+      - name: Upload XML # with a filename appended with .new 
+        run: # TODO scp/rsync
+      - name: Replace old files with new (if names are the same)
+        run: # mv ${{ new }} ${{ old }}
+
+  purge-workspace:
+    steps:
+      - name: Delete all files in workspace
+        run: # TODO something like: rm -rf /mnt/build_workspace/${{ github.ref_name }}
