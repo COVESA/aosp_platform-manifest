@@ -1,0 +1,25 @@
+name: Checkout AOSP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, high-performance-ubuntu]
+    env:
+      # for example /home/github-runner/actions-runner/_work/android-12
+      AOSP_ROOT: $GITHUB_WORKSPACE/$GITHUB_REF_NAME
+    steps:
+      - name: repo init if workspace is empty
+        run: |
+          echo "GITHUB_WORKSPACE = $GITHUB_WORKSPACE"
+          echo "GITHUB_REF_NAME (branch) = $GITHUB_REF_NAME"
+          if [[ ! -d "$AOSP_ROOT" || -z "$(ls -A '$AOSP_ROOT')" ]]; then
+            mkdir -p "$AOSP_ROOT"
+            cd "$AOSP_ROOT"
+            repo init -u $GITHUB_SERVER_URL/$GITHUB_REPOSITORY -b $GITHUB_REF_NAME --depth=1
+          else
+            exit 1
+          fi
+        # print all lines from the script
+        shell: bash -x {0}
