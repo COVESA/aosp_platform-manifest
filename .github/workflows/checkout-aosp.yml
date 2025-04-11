@@ -12,8 +12,8 @@ jobs:
           repo version
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
-          AOSP_ROOT="$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME"
-          if [[ ! -d "$AOSP_ROOT" || -z "$(ls -A \"$AOSP_ROOT\"" ]]; then
+          export AOSP_ROOT="$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME"
+          if [[ ! -d "$AOSP_ROOT" || -z "$(ls -A '${AOSP_ROOT}'" ]]; then
             mkdir -p "$AOSP_ROOT"
             cd "$AOSP_ROOT"
             repo init -u $GITHUB_SERVER_URL/$GITHUB_REPOSITORY -b $GITHUB_REF_NAME --depth=1
