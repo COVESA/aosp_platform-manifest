@@ -15,8 +15,7 @@ jobs:
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
           mkdir -p "$AOSP_ROOT"
-          subDirectories=$(ls -A "$AOSP_ROOT")
-          if [ -z "subDirectories" ]; then
+          if [ -z "$(ls -A $AOSP_ROOT)" ]; then
             cd "$AOSP_ROOT"
             repo init -u "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" -b "$GITHUB_REF_NAME" --depth=1
           else
