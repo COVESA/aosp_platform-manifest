@@ -26,4 +26,5 @@ jobs:
         shell: bash -ex {0}
       - name: repo sync
         run: |
-          echo TODO repo sync in $AOSP_ROOT
+          cd "$AOSP_ROOT"
+          repo sync -c
