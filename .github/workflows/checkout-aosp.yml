@@ -12,12 +12,15 @@ jobs:
           repo version
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
-          export AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
           mkdir -p "$AOSP_ROOT"
-          lsRes=$(ls -A "$AOSP_ROOT")
-          if [ -z "lsRes" ]; then
+          subDirectories=$(ls -A "$AOSP_ROOT")
+          if [ -z "subDirectories" ]; then
             cd "$AOSP_ROOT"
-            repo init -u $GITHUB_SERVER_URL/$GITHUB_REPOSITORY -b $GITHUB_REF_NAME --depth=1
+            repo init -u "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" -b "$GITHUB_REF_NAME" --depth=1
+          else
+            echo "Directory is not empty, skipping repo init"
           fi
         # print all lines from the script and stop on errors
         shell: bash -ex {0}
