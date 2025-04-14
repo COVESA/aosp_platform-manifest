@@ -12,17 +12,15 @@ jobs:
           repo version
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
-          AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
-          if [ ! -d "$AOSP_ROOT" ]; then
-            lsRes=$(ls -A "$AOSP_ROOT")
-            if [ -z "lsRes" ]; then
-              mkdir -p "$AOSP_ROOT"
-              cd "$AOSP_ROOT"
-              repo init -u $GITHUB_SERVER_URL/$GITHUB_REPOSITORY -b $GITHUB_REF_NAME --depth=1
-            fi
+          export AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          mkdir -p "$AOSP_ROOT"
+          lsRes=$(ls -A "$AOSP_ROOT")
+          if [ -z "lsRes" ]; then
+            cd "$AOSP_ROOT"
+            repo init -u $GITHUB_SERVER_URL/$GITHUB_REPOSITORY -b $GITHUB_REF_NAME --depth=1
           fi
         # print all lines from the script and stop on errors
         shell: bash -ex {0}
       - name: repo sync
         run: |
-          echo TODO repo sync
+          echo TODO repo sync in $AOSP_ROOT
