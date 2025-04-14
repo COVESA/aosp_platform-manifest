@@ -3,11 +3,12 @@ name: Checkout AOSP
 on:
   workflow_dispatch:
 
+env:
+  REPOSITORY_ROOT: ${{ dirname "$GITHUB_WORKSPACE" }}
+  GITHUB_ACTIONS_ROOT: ${{ dirname "$REPOSITORY_ROOT" }}
+  AOSP_ROOT: ${{ $GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME }}
+
 jobs:
-  env:
-    REPOSITORY_ROOT: ${{ dirname "$GITHUB_WORKSPACE" }}
-    GITHUB_ACTIONS_ROOT: ${{ dirname "$REPOSITORY_ROOT" }}
-    AOSP_ROOT: ${{ $GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME }}
   checkout:
     runs-on: [self-hosted, high-performance-ubuntu]
     steps:
