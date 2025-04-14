@@ -1,4 +1,4 @@
-name: Checkout AOSP
+name: Checkout AOSP + COVESA sources
 
 on:
   workflow_dispatch:

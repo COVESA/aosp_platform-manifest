@@ -1,0 +1,27 @@
+name: Build COVESA emulators
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, high-performance-ubuntu]
+    steps:
+      - name: Set-up environment
+        run: |
+          REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
+          GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
+          AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
+      - name: Build ARM emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch covesa_emu_arm64_car-userdebug
+          m emu_img_zip
+      - name: Build x86_64 emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch covesa_emu_x86_64_car-userdebug
+          m emu_img_zip
