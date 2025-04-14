@@ -2,7 +2,7 @@
 
 This repository contains repo manifests to build COVESA AOSP distributions.
 
-Binary distributions can be found here instead: TBD
+For instructions on how to download emulator binaries please refer to https://github.com/COVESA/aosp_device_covesa_emulator
 
 ## How to get source code
 
@@ -42,4 +42,4 @@ This creates following artifact: `out/target/product/emulator_arm64/sdk-repo-lin
 
 ## How to distribute
 
-Deployment details are part of `device/covesa/emulator`.
+Deployment details are part of [`device/covesa/emulator`](https://github.com/COVESA/aosp_device_covesa_emulator).
