@@ -2,5 +2,6 @@
 <manifest>
 
   <project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />
+  <project path="vendor/covesa/sunup" name="aosp_vendor_covesa_sunup" remote="covesa-github" revision="main" />
 
 </manifest>
