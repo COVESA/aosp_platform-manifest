@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
 
-  <project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />
+  <remote  name="covesa-github"
+      fetch="git@github.com:COVESA" />
 
+  <!-- Emulator -->
+  <!-- TODO needs update to android-15 -->
+  <!--<project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />-->
+
+  <!-- OEM VHAL -->
+  <remove-project name="platform/build/release"/>
+  <remove-project name="device/generic/car"/>
+  <remove-project name="device/google/cuttlefish"/>
+  <remove-project name="platform/hardware/interfaces"/>
+  <remove-project name="platform/packages/services/Car"/>
+
+  <project path="build/release" name="aosp_build_release" groups="pdk,tradefed,sysui-studio" revision="oem-vhal" remote="covesa-github" />
+  <project path="device/generic/car" name="aosp_device_generic_car" groups="pdk" revision="oem-vhal" remote="covesa-github" />
+  <project path="device/google/cuttlefish" name="aosp_device_google_cuttlefish" groups="device,pdk" revision="oem-vhal" remote="covesa-github"  />
+  <project path="hardware/interfaces" name="aosp_platform_hardware_interfaces" groups="pdk,sysui-studio" revision="oem-vhal" remote="covesa-github" />
+  <project path="packages/services/Car" name="aosp_platform_packages_services_Car" groups="pdk-cw-fs,pdk-fs" revision="oem-vhal" remote="covesa-github" />
+  <project path="packages/services/oem" name="aosp_packages_services_oem" groups="pdk-cw-fs,pdk-fs" revision="oem-vhal" remote="covesa-github"/>
+  <project path="vendor/car" name="aosp_vendor_car" groups="pdk" revision="oem-vhal" remote="covesa-github" />
+
+  <remote  name="dhbaird"
+           fetch="https://github.com/dhbaird" />
+  <project path="device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient" name="easywsclient" revision="afc1d8cfc584e0f1f4a77e8c0ce3e979d9fe7ce2" remote="dhbaird"/>
 </manifest>
