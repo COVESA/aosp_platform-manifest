@@ -13,6 +13,10 @@ jobs:
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
+      - name: Apply easywsclient patch to socket-based VHAL
+        run: |
+          cd "$AOSP_ROOT/device/generic/car/emulator/vhal_socket_vehicle_hardware/external/easywsclient"
+          git apply ../easywsclient_fix.patch
       - name: Build ARM emulator image
         run: |
           cd "$AOSP_ROOT"
