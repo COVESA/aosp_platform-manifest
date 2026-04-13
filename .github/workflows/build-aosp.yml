@@ -16,7 +16,7 @@ jobs:
       - name: Apply easywsclient patch to socket-based VHAL
         run: |
           cd "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient"
-          git apply ../easywsclient_fix.patch
+          git apply --check --reverse ../easywsclient_fix.patch || git apply ../easywsclient_fix.patch
       - name: Build ARM emulator image
         run: |
           cd "$AOSP_ROOT"
