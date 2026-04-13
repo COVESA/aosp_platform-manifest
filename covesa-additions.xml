@@ -2,7 +2,7 @@
 <manifest>
 
   <remote  name="covesa-github"
-      fetch="git@github.com:COVESA" />
+      fetch="https://github.com/COVESA" />
 
   <!-- Emulator -->
   <!-- TODO needs update to android-15 -->
