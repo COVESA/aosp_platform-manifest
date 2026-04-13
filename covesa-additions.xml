@@ -6,7 +6,7 @@
 
   <!-- Emulator -->
   <!-- TODO needs update to android-15 -->
-  <project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />
+  <!--<project path="device/covesa/emulator" name="aosp_device_covesa_emulator" remote="covesa-github" revision="android-12" />-->
 
   <!-- OEM VHAL -->
   <remove-project name="platform/build/release"/>
