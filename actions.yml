@@ -23,12 +23,12 @@ jobs:
       - name: Build ARM emulator image (fast)
         run: |
           source build/envsetup.sh
-          lunch covesa_emu_arm64_car-userdebug
+          lunch sdk_car_arm64-trunk_staging-userdebug
           m emu_img_zip
       - name: Build x86_64 emulator image (fast)
         run: |
           source build/envsetup.sh
-          lunch covesa_emu_x86_64_car-userdebug
+          lunch sdk_car_x86_64-trunk_staging-userdebug
           m emu_img_zip
 
   incremental-build:
@@ -37,12 +37,12 @@ jobs:
       - name: Build ARM emulator image
         run: |
           source build/envsetup.sh
-          lunch covesa_emu_arm64_car-userdebug
+          lunch sdk_car_arm64-trunk_staging-userdebug
           m emu_img_zip
       - name: Build x86_64 emulator image
         run: |
           source build/envsetup.sh
-          lunch covesa_emu_x86_64_car-userdebug
+          lunch sdk_car_x86_64-trunk_staging-userdebug
           m emu_img_zip
 
   deploy:
