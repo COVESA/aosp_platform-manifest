@@ -33,7 +33,6 @@ jobs:
           EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
           cp "$AOSP_ROOT/out/target/product/emulator_car64_arm64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
           mv "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
-          "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
           sha1sum "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
       - name: Build x86_64 emulator image
         run: |
