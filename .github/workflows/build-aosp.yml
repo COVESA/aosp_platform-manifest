@@ -55,7 +55,7 @@ jobs:
           cd "$AOSP_ROOT"
           source build/envsetup.sh
           lunch sdk_car_x86_64-trunk_staging-userdebug
-          m android.car.jar
+          m android.car
       - name: Deploy Android Car Library
         run: |
           cp "$AOSP_ROOT/out/soong/.intermediates/packages/services/Car/car-lib/android.car/android_common/javac/android.car.jar" "$DIST_ROOT/android.car.jar.part"
