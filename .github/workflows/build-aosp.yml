@@ -12,6 +12,7 @@ jobs:
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          DIST_ROOT=/mnt/emulators
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
       - name: Apply easywsclient patch to socket-based VHAL
         run: |
@@ -23,9 +24,40 @@ jobs:
           source build/envsetup.sh
           lunch sdk_car_arm64-trunk_staging-userdebug
           m emu_img_zip
+      - name: Deploy ARM emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
+          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
+          cp "$AOSP_ROOT/out/target/product/emulator_car64_arm64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
+          mv "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
+          "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
+          sha1sum "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
       - name: Build x86_64 emulator image
         run: |
           cd "$AOSP_ROOT"
           source build/envsetup.sh
           lunch sdk_car_x86_64-trunk_staging-userdebug
           m emu_img_zip
+      - name: Deploy ARM emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
+          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
+          cp "$AOSP_ROOT/out/target/product/emulator_car64_x86_64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
+          mv "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip"
+          sha1sum "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
+      - name: Build Android Car Library
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_x86_64-trunk_staging-userdebug
+          m android.car.jar
+      - name: Deploy Android Car Library
+        run: |
+          cp "$AOSP_ROOT/out/soong/.intermediates/packages/services/Car/car-lib/android.car/android_common/javac/android.car.jar" "$DIST_ROOT/android.car.jar.part"
+          mv "$DIST_ROOT/android.car.jar.part" "$DIST_ROOT/android.car.jar"
