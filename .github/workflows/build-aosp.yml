@@ -12,8 +12,8 @@ jobs:
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
-          DIST_ROOT=/mnt/emulators
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
+          echo "DIST_ROOT=/mnt/emulators" >> $GITHUB_ENV
       - name: Apply easywsclient patch to socket-based VHAL
         run: |
           cd "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient"
