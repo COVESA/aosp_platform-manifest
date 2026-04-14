@@ -15,12 +15,12 @@ jobs:
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
           mkdir -p "$AOSP_ROOT"
-          if [ -z "$(ls -A $AOSP_ROOT)" ]; then
+          #if [ -z "$(ls -A $AOSP_ROOT)" ]; then
             cd "$AOSP_ROOT"
             repo init -u "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" -b "$GITHUB_REF_NAME" --depth=1
-          else
-            echo "Directory is not empty, skipping repo init"
-          fi
+          #else
+          #  echo "Directory is not empty, skipping repo init"
+          #fi
         # print all lines from the script and stop on errors
         shell: bash -ex {0}
       - name: repo sync
