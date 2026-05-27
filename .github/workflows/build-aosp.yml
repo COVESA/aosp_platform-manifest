@@ -12,51 +12,61 @@ jobs:
           REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
           GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
           AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          VSS_ROOT=$GITHUB_ACTIONS_ROOT/vehicle_signal_specification
+          VSS_TOOLS_ROOT=$GITHUB_ACTIONS_ROOT/vss-tools
           echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
           echo "DIST_ROOT=/mnt/emulators" >> $GITHUB_ENV
+          echo "VSS_ROOT=$VSS_ROOT" >> $GITHUB_ENV
+          echo "VSS_TOOLS_ROOT=$VSS_TOOLS_ROOT" >> $GITHUB_ENV
       - name: Apply easywsclient patch to socket-based VHAL
         run: |
-          cd "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient"
-          git apply --check --reverse ../easywsclient_fix.patch || git apply ../easywsclient_fix.patch
+          git -C "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient" \
+            apply --check --reverse "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient_fix.patch" \
+          || git -C "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient" \
+             apply "$AOSP_ROOT/device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient_fix.patch"
+      - name: Generate VSS based VHAL
+        run: |
+          source "$VSS_TOOLS_ROOT/.venv/bin/activate"
+          vspec export vhal --no-extend-new --aosp-workspace-path "$AOSP_ROOT" --vspec "$VSS_ROOT/spec/VehicleSignalSpecification.vspec"
+      - name: Approve AIDL changes
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          m android.car-module.stubs.source-update-current-api \
+            android.car-stubs-docs-update-current-api \
+            vendor.android.hardware.automotive.vehicle.property-update-api
+      - name: Generating annotation enums (post processing)
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          source "$VSS_TOOLS_ROOT/.venv/bin/activate"
+          python "hardware/interfaces/automotive/vehicle/tools/generate_annotation_enums.py"
+          git --git-dir="hardware/interfaces/.git" --work-tree="hardware/interfaces" restore \
+            "automotive/vehicle/aidl/generated_lib/4/java/AccessForVehicleProperty.java" \
+            "automotive/vehicle/aidl/generated_lib/4/java/ChangeModeForVehicleProperty.java"
+      - name: VehiclePropertyIdsParser (post processing)
+        run: |
+          java -jar "$AOSP_ROOT/packages/services/Car/tools/vehiclepropertyidsparser/prebuilt/VehiclePropertyIdsParser.jar" \
+            "$AOSP_ROOT/packages/services/Car/car-lib/src" \
+            "$AOSP_ROOT/vendor/car/packages/services/Car/car-lib/src" \
+            "$AOSP_ROOT/packages/services/Car/car-lib/generated-prop-config/CarSvcProps.json"
       - name: Build ARM emulator image
         run: |
           cd "$AOSP_ROOT"
           source build/envsetup.sh
           lunch sdk_car_arm64-trunk_staging-userdebug
           m emu_img_zip
-      - name: Deploy ARM emulator image
-        run: |
-          cd "$AOSP_ROOT"
-          source build/envsetup.sh
-          lunch sdk_car_arm64-trunk_staging-userdebug
-          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
-          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
-          cp "$AOSP_ROOT/out/target/product/emulator_car64_arm64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
-          mv "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
-          sha1sum "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
       - name: Build x86_64 emulator image
         run: |
           cd "$AOSP_ROOT"
           source build/envsetup.sh
           lunch sdk_car_x86_64-trunk_staging-userdebug
           m emu_img_zip
-      - name: Deploy ARM emulator image
-        run: |
-          cd "$AOSP_ROOT"
-          source build/envsetup.sh
-          lunch sdk_car_arm64-trunk_staging-userdebug
-          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
-          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
-          cp "$AOSP_ROOT/out/target/product/emulator_car64_x86_64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
-          mv "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip"
-          sha1sum "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
       - name: Build Android Car Library
         run: |
           cd "$AOSP_ROOT"
           source build/envsetup.sh
           lunch sdk_car_x86_64-trunk_staging-userdebug
           m android.car
-      - name: Deploy Android Car Library
-        run: |
-          cp "$AOSP_ROOT/out/soong/.intermediates/packages/services/Car/car-lib/android.car/android_common/javac/android.car.jar" "$DIST_ROOT/android.car.jar.part"
-          mv "$DIST_ROOT/android.car.jar.part" "$DIST_ROOT/android.car.jar"

@@ -1,0 +1,29 @@
+name: Setup VSS including tooling
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, high-performance-ubuntu]
+    steps:
+      - name: Set-up environment
+        run: |
+          REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
+          GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
+          VSS_ROOT=$GITHUB_ACTIONS_ROOT/vehicle_signal_specification
+          VSS_TOOLS_ROOT=$GITHUB_ACTIONS_ROOT/vss-tools
+          echo "VSS_ROOT=$VSS_ROOT" >> $GITHUB_ENV
+          echo "VSS_TOOLS_ROOT=$VSS_TOOLS_ROOT" >> $GITHUB_ENV
+      - name: Checkout latest Vehicle Signal Specification
+        run: |
+          [ -d "$VSS_ROOT/.git" ] && git -C "$VSS_ROOT" pull || git clone https://github.com/COVESA/vehicle_signal_specification.git "$VSS_ROOT"
+      - name: Install UV
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Setup VSS Tools
+        run: |
+          [ -d "$VSS_TOOLS_ROOT/.git" ] && git -C "$VSS_TOOLS_ROOT" pull || git clone https://github.com/COVESA/vss-tools.git "$VSS_TOOLS_ROOT"
+          source $HOME/.local/bin/env
+          cd "$VSS_TOOLS_ROOT"
+          uv sync
