@@ -1,0 +1,40 @@
+name: Deploy COVESA emulators and Car Library
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, high-performance-ubuntu]
+    steps:
+      - name: Set-up environment
+        run: |
+          REPOSITORY_ROOT=$(dirname "$GITHUB_WORKSPACE")
+          GITHUB_ACTIONS_ROOT=$(dirname "$REPOSITORY_ROOT")
+          AOSP_ROOT=$GITHUB_ACTIONS_ROOT/$GITHUB_REF_NAME
+          echo "AOSP_ROOT=$AOSP_ROOT" >> $GITHUB_ENV
+          echo "DIST_ROOT=/mnt/emulators" >> $GITHUB_ENV
+      - name: Deploy ARM emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
+          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
+          cp "$AOSP_ROOT/out/target/product/emulator_car64_arm64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
+          mv "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip"
+          sha1sum "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-arm64-v8a-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
+      - name: Deploy ARM emulator image
+        run: |
+          cd "$AOSP_ROOT"
+          source build/envsetup.sh
+          lunch sdk_car_arm64-trunk_staging-userdebug
+          SDK_VERSION=$(get_build_var PLATFORM_SDK_VERSION)
+          EXT_VERSION=$(get_build_var PLATFORM_SDK_EXTENSION_VERSION)
+          cp "$AOSP_ROOT/out/target/product/emulator_car64_x86_64/sdk-repo-linux-system-images.zip" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part"
+          mv "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.part" "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip"
+          sha1sum "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip" | cut -d" " -f1 > "$DIST_ROOT/covesa-avd-x86_64-${SDK_VERSION}_r${EXT_VERSION}.zip.sha1"
+      - name: Deploy Android Car Library
+        run: |
+          cp "$AOSP_ROOT/out/soong/.intermediates/packages/services/Car/car-lib/android.car/android_common/javac/android.car.jar" "$DIST_ROOT/android.car.jar.part"
+          mv "$DIST_ROOT/android.car.jar.part" "$DIST_ROOT/android.car.jar"
