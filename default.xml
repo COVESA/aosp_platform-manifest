@@ -5,6 +5,6 @@
   <include name="aosp-vanilla.xml" />
 
   <!-- COVESA additions -->
-  <include name="covesa-additions.xml" />
+  <include name="custom-additions.xml" />
 
 </manifest>

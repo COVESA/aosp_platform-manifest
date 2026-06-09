@@ -34,7 +34,7 @@ $ repo sync -l
 To unshallow only COVESA's additions only:
 
 ```bash
-$ sed -nE 's/^\s*<project[^>]*path="([^"]+)".*/\1/p' .repo/manifests/covesa-additions.xml \
+$ sed -nE 's/^\s*<project[^>]*path="([^"]+)".*/\1/p' .repo/manifests/custom-additions.xml \
   | xargs -I{} git --git-dir="{}/.git" --work-tree="{}" fetch --unshallow
 ```
 
