@@ -22,4 +22,7 @@
 
   <remote name="dhbaird" fetch="https://github.com/dhbaird" />
   <project path="device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/easywsclient" name="easywsclient" revision="afc1d8cfc584e0f1f4a77e8c0ce3e979d9fe7ce2" remote="dhbaird" />
+
+  <remote name="eclipse-kuksa" fetch="https://github.com/eclipse-kuksa" />
+  <project path="device/generic/car/emulator/vhal_sockets_vehicle_hardware/external/kuksa/proto" name="kuksa-proto" revision="28bf76ae57085dad425eedd95bc7bd442e1314a7" remote="eclipse-kuksa" />
 </manifest>
